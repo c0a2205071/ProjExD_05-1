@@ -1,16 +1,19 @@
-import pygame as pg
 import sys
 import time
+import random
 
+import pygame as pg
+
+# 色の数値の設定
 white = (255,255,255)
 black = (0,0,0)
 green = (0,150,0)
 red = (255,0,0)
 blue = (0,0,255)
 light_blue = (147,251,253)
-width = 1600
-height = 900
-goalheight = 50
+width = 1600 # ディスプレイの横の長さ
+height = 900 # ディスプレイの縦の長さ
+goalheight = 50 # ゴールの範囲
 
 def check_bound(area: pg.Rect, obj: pg.Rect) -> tuple[bool, bool]:
     yoko, tate = True, True
@@ -19,15 +22,15 @@ def check_bound(area: pg.Rect, obj: pg.Rect) -> tuple[bool, bool]:
     if obj.top < area.top or area.bottom < obj.bottom:  # 縦方向のはみ出し判定
         tate = False
     return yoko, tate
-class playerlect:
-
+class playerlect: # パドルに関するクラス
+    # 1パターン目の押下キーと移動量の辞書
     _alfa = {
         pg.K_w: (0, -1),
         pg.K_s: (0, +1),
         pg.K_a: (-1, 0),
         pg.K_d: (+1, 0),
     }
-
+    # 2パターン目の押下キーと移動量の辞書
     _delta = {
         pg.K_UP: (0, -1),
         pg.K_DOWN: (0, +1),
@@ -57,12 +60,13 @@ class playerlect:
         screen.blit(self._img1,self._rct1)
         screen.blit(self._img2,self._rct2)
 
-class ball:
+class ball: # ディスクに関するクラス
+    _dires = [-1, 0, +1]
     def __init__(self):
         self._img = pg.image.load(f"ex05/disc.png")
         self._rct = self._img.get_rect()
         self._rct.center = width/2,height/2
-        self._vx, self._vy = +1,+1
+        self._vx, self._vy = random.choice(ball._dires), random.choice(ball._dires)
         
     def update(self,screen: pg.Surface):
         yoko,tate = check_bound(screen.get_rect(), self._rct)
@@ -86,6 +90,8 @@ def main():
             if event.type == pg.QUIT: return
 
         screen.fill((0,0,0))
+
+        # ディスプレイの周りに表示する線に関するプログラム
         pg.draw.line(screen, blue,(0,0), (screen.get_width()/2 - 5,0) ,20)
         pg.draw.line(screen, blue,(0,screen.get_height()), (screen.get_width()/2 - 5,screen.get_height()) ,20)
         pg.draw.line(screen, red, (screen.get_width()/2+5,0), (screen.get_width() ,0) ,20)
