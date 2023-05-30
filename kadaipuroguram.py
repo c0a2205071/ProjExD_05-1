@@ -77,6 +77,7 @@ class ball: # ディスクに関するクラス
         self._rct.move_ip(self._vx, self._vy)
         screen.blit(self._img,self._rct)
 
+
 def main():
     pg.display.set_caption("Air-hockey")
     screen = pg.display.set_mode((1600,900))
