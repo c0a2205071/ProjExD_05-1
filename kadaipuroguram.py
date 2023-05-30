@@ -68,12 +68,22 @@ class ball: # ディスクに関するクラス
         self._rct.center = width/2,height/2
         self._vx, self._vy = random.choice(ball._dires), random.choice(ball._dires)
         
-    def update(self,screen: pg.Surface):
+    def update(self,screen: pg.Surface, pl: playerlect):
         yoko,tate = check_bound(screen.get_rect(), self._rct)
         if not yoko:
             self._vx *= -1
         if not tate:
             self._vy *= -1
+
+        if pl._rct1.colliderect(self._rct):
+            self._vx *= -1
+            self._vy *= -1
+        
+        if pl._rct2.colliderect(self._rct):
+            self._vx *= -1
+            self._vy *= -1
+
+
         self._rct.move_ip(self._vx, self._vy)
         screen.blit(self._img,self._rct)
 
@@ -108,7 +118,7 @@ def main():
         key_lst = pg.key.get_pressed()
         
         pl1.update(key_lst,screen)
-        disc.update(screen)
+        disc.update(screen, pl1)
 
         pg.display.update()
         clock.tick(1000)
