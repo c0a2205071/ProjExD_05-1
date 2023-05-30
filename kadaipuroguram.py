@@ -13,7 +13,7 @@ blue = (0,0,255)
 light_blue = (147,251,253)
 width = 1600 # ディスプレイの横の長さ
 height = 900 # ディスプレイの縦の長さ
-goalheight = 50 # ゴールの範囲
+goalheight = 150 # ゴールの範囲
 
 def check_bound(area: pg.Rect, obj: pg.Rect) -> tuple[bool, bool]:
     yoko, tate = True, True
@@ -100,11 +100,11 @@ class ball: # ディスクに関するクラス
 
         if pl._rct1.colliderect(self._rct):
             self._vx *= -1
-            self._vy *= -1
+            self._vy *= random.choice(ball._dires)
         
         if pl._rct2.colliderect(self._rct):
             self._vx *= -1
-            self._vy *= -1
+            self._vy *= random.choice(ball._dires)
 
 
         self._rct.move_ip(self._vx, self._vy)
