@@ -22,6 +22,21 @@ def check_bound(area: pg.Rect, obj: pg.Rect) -> tuple[bool, bool]:
     if obj.top < area.top or area.bottom < obj.bottom:  # 縦方向のはみ出し判定
         tate = False
     return yoko, tate
+
+def check_bound_hockey(scr_rect: pg.Rect, obj_rect: pg.Rect):
+    """
+    ホッケーの動く範囲を指定
+    """
+    yoko, tate = True, True
+    if obj_rect.center <  scr_rect.center:
+        if obj_rect.left < scr_rect.left or scr_rect.centerx < obj_rect.right:
+            yoko = False
+    if obj_rect.center >  scr_rect.center:
+        if obj_rect.left < scr_rect.centerx or scr_rect.right < obj_rect.right:
+            yoko = False
+    if obj_rect.top < scr_rect.top or scr_rect.bottom < obj_rect.bottom:
+        tate = False
+    return yoko, tate
 class playerlect: # パドルに関するクラス
     # 1パターン目の押下キーと移動量の辞書
     _alfa = {
@@ -52,10 +67,18 @@ class playerlect: # パドルに関するクラス
         for k,mv in __class__._delta.items():
             if key_lst[k]:
                 self._rct1.move_ip(mv)
+        if check_bound_hockey(screen.get_rect(), self._rct1) != (True, True):
+            for k, mv in __class__._delta.items():
+                if key_lst[k]:
+                    self._rct1.move_ip(-mv[0], -mv[1])
         
         for k,mv in __class__._alfa.items():
             if key_lst[k]:
                 self._rct2.move_ip(mv)
+        if check_bound_hockey(screen.get_rect(), self._rct2) != (True, True):
+            for k, mv in __class__._alfa.items():
+                if key_lst[k]:
+                    self._rct2.move_ip(-mv[0], -mv[1])
 
         screen.blit(self._img1,self._rct1)
         screen.blit(self._img2,self._rct2)
