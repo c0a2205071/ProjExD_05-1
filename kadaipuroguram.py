@@ -22,6 +22,21 @@ def check_bound(area: pg.Rect, obj: pg.Rect) -> tuple[bool, bool]:
     if obj.top < area.top or area.bottom < obj.bottom:  # 縦方向のはみ出し判定
         tate = False
     return yoko, tate
+
+def check_bound_hockey(scr_rect: pg.Rect, obj_rect: pg.Rect):
+    """
+    ホッケーの動く範囲を指定
+    """
+    yoko, tate = True, True
+    if obj_rect.center <  scr_rect.center:
+        if obj_rect.left < scr_rect.left or scr_rect.centerx < obj_rect.right:
+            yoko = False
+    if obj_rect.center >  scr_rect.center:
+        if obj_rect.left < scr_rect.centerx or scr_rect.right < obj_rect.right:
+            yoko = False
+    if obj_rect.top < scr_rect.top or scr_rect.bottom < obj_rect.bottom:
+        tate = False
+    return yoko, tate
 class playerlect: # パドルに関するクラス
     # 1パターン目の押下キーと移動量の辞書
     _alfa = {
@@ -52,10 +67,18 @@ class playerlect: # パドルに関するクラス
         for k,mv in __class__._delta.items():
             if key_lst[k]:
                 self._rct1.move_ip(mv)
+        if check_bound_hockey(screen.get_rect(), self._rct1) != (True, True):
+            for k, mv in __class__._delta.items():
+                if key_lst[k]:
+                    self._rct1.move_ip(-mv[0], -mv[1])
         
         for k,mv in __class__._alfa.items():
             if key_lst[k]:
                 self._rct2.move_ip(mv)
+        if check_bound_hockey(screen.get_rect(), self._rct2) != (True, True):
+            for k, mv in __class__._alfa.items():
+                if key_lst[k]:
+                    self._rct2.move_ip(-mv[0], -mv[1])
 
         screen.blit(self._img1,self._rct1)
         screen.blit(self._img2,self._rct2)
@@ -68,12 +91,22 @@ class ball: # ディスクに関するクラス
         self._rct.center = width/2,height/2
         self._vx, self._vy = random.choice(ball._dires), random.choice(ball._dires)
         
-    def update(self,screen: pg.Surface):
+    def update(self,screen: pg.Surface, pl: playerlect):
         yoko,tate = check_bound(screen.get_rect(), self._rct)
         if not yoko:
             self._vx *= -1
         if not tate:
             self._vy *= -1
+
+        if pl._rct1.colliderect(self._rct):
+            self._vx *= -1
+            self._vy *= -1
+        
+        if pl._rct2.colliderect(self._rct):
+            self._vx *= -1
+            self._vy *= -1
+
+
         self._rct.move_ip(self._vx, self._vy)
         screen.blit(self._img,self._rct)
         
@@ -92,6 +125,7 @@ class ball: # ディスクに関するクラス
         if (self._rct.right >= scr_rect.right) and (self._rct.top <= scr_rect.centery + goalheight) and (self._rct.bottom >= scr_rect.centery - goalheight):
             goal_in_right = True
         return goal_in_left, goal_in_right
+
 
 def main():
     pg.display.set_caption("Air-hockey")
@@ -141,11 +175,11 @@ def main():
         key_lst = pg.key.get_pressed()
         
         pl1.update(key_lst,screen)
-        disc.update(screen)
         txt = fonto.render(str(int(score1)), True, (255, 255, 255))
         screen.blit(txt, [400, 200])
         txt2 = fonto2.render(str(int(score2)), True, (255, 255, 255))  
         screen.blit(txt2, [1200, 200])  
+        disc.update(screen, pl1)
         pg.display.update()
         clock.tick(1000)
         
