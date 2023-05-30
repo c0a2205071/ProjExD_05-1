@@ -13,7 +13,7 @@ blue = (0,0,255)
 light_blue = (147,251,253)
 width = 1600 # ディスプレイの横の長さ
 height = 900 # ディスプレイの縦の長さ
-goalheight = 50 # ゴールの範囲
+goalheight = 100 # ゴールの範囲
 
 def check_bound(area: pg.Rect, obj: pg.Rect) -> tuple[bool, bool]:
     yoko, tate = True, True
@@ -40,23 +40,23 @@ def check_bound_hockey(scr_rect: pg.Rect, obj_rect: pg.Rect):
 class playerlect: # パドルに関するクラス
     # 1パターン目の押下キーと移動量の辞書
     _alfa = {
-        pg.K_w: (0, -1),
-        pg.K_s: (0, +1),
-        pg.K_a: (-1, 0),
-        pg.K_d: (+1, 0),
+        pg.K_w: (0, -2),
+        pg.K_s: (0, +2),
+        pg.K_a: (-2, 0),
+        pg.K_d: (+2, 0),
     }
     # 2パターン目の押下キーと移動量の辞書
     _delta = {
-        pg.K_UP: (0, -1),
-        pg.K_DOWN: (0, +1),
-        pg.K_LEFT: (-1, 0),
-        pg.K_RIGHT: (+1, 0),
+        pg.K_UP: (0, -2),
+        pg.K_DOWN: (0, +2),
+        pg.K_LEFT: (-2, 0),
+        pg.K_RIGHT: (+2, 0),
     }
     
 
     def __init__(self, xy: tuple[int,int], zw: tuple[int,int]): 
-        self._img1 = pg.transform.rotozoom(pg.image.load(f"ProjExD2023/ex05/redpad.png"),0, 2.0)
-        self._img2 = pg.transform.rotozoom(pg.image.load(f"ProjExD2023/ex05/bluepad.png"),0, 2.0)
+        self._img1 = pg.transform.rotozoom(pg.image.load(f"ex05/redpad.png"),0, 2.0)
+        self._img2 = pg.transform.rotozoom(pg.image.load(f"ex05/bluepad.png"),0, 2.0)
         self._rct1 = self._img1.get_rect()
         self._rct2 = self._img2.get_rect()
         self._rct1.center = xy
@@ -86,12 +86,13 @@ class playerlect: # パドルに関するクラス
 class ball: # ディスクに関するクラス
     _dires = [-1, +1]
     def __init__(self):
-        self._img = pg.image.load(f"ProjExD2023/ex05/disc.png")
+        self._img = pg.image.load(f"ex05/disc.png")
         self._rct = self._img.get_rect()
         self._rct.center = width/2,height/2
         self._vx, self._vy = random.choice(ball._dires), random.choice(ball._dires)
         
     def update(self,screen: pg.Surface, pl: playerlect):
+
         yoko,tate = check_bound(screen.get_rect(), self._rct)
         if not yoko:
             self._vx *= -1
@@ -100,11 +101,11 @@ class ball: # ディスクに関するクラス
 
         if pl._rct1.colliderect(self._rct):
             self._vx *= -1
-            self._vy *= -1
+            self._vy *= random.choice(ball._dires)
         
         if pl._rct2.colliderect(self._rct):
             self._vx *= -1
-            self._vy *= -1
+            self._vy *= random.choice(ball._dires)
 
 
         self._rct.move_ip(self._vx, self._vy)
@@ -165,7 +166,7 @@ def main():
         if g_right == True:
             score2 += 1
             disc = ball()
-        if score1 == 10 or score2 == 10:
+        if score1 == 5 or score2 == 5:
             txt2 = fonto3.render("Game Set!", True, (255, 0, 0)) 
             screen.blit(txt2, [700, 200]) 
             pg.display.update()
