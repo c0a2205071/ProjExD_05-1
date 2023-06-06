@@ -13,7 +13,7 @@ blue = (0,0,255)
 light_blue = (147,251,253)
 width = 1600 # ディスプレイの横の長さ
 height = 900 # ディスプレイの縦の長さ
-goalheight = 100 # ゴールの範囲
+goalheight = 150 # ゴールの範囲
 
 def check_bound(area: pg.Rect, obj: pg.Rect) -> tuple[bool, bool]:
     yoko, tate = True, True
@@ -107,7 +107,6 @@ class ball: # ディスクに関するクラス
             self._vx *= random.choice(ball._dires)
             self._vy *= random.choice(ball._dires)
 
-
         self._rct.move_ip(self._vx, self._vy)
         screen.blit(self._img,self._rct)
         
@@ -158,13 +157,13 @@ def main():
         pg.draw.line(screen, red, (screen.get_width(),0), (screen.get_width(),screen.get_height()/2-goalheight) ,5)
         pg.draw.line(screen, red, (screen.get_width(),screen.get_height()/2 + goalheight), (screen.get_width(),screen.get_height()) ,5)
 
-        #ゴール判定 左ゴールに入った場合、g_leftがTrueに,右ゴールに入った場合、g_rightがTrueにそれぞれなる
+        # ゴール判定 左ゴールに入った場合、g_leftがTrueに,右ゴールに入った場合、g_rightがTrueにそれぞれなる
         g_left, g_right = disc.check_goal_in(screen.get_rect(), goalheight)
         if g_left == True:
-            score1 += 1
+            score2 += 1  # 得点機能
             disc = ball()
         if g_right == True:
-            score2 += 1
+            score1 += 1
             disc = ball()
         if score1 == 5 or score2 == 5:
             txt2 = fonto3.render("Game Set!", True, (255, 0, 0)) 
@@ -175,7 +174,7 @@ def main():
 
         key_lst = pg.key.get_pressed()
         
-        pl1.update(key_lst,screen)
+        pl1.update(key_lst,screen)  # 得点の表示
         txt = fonto.render(str(int(score1)), True, (255, 255, 255))
         screen.blit(txt, [400, 200])
         txt2 = fonto2.render(str(int(score2)), True, (255, 255, 255))  
