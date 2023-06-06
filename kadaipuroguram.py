@@ -40,17 +40,17 @@ def check_bound_hockey(scr_rect: pg.Rect, obj_rect: pg.Rect):
 class playerlect: # パドルに関するクラス
     # 1パターン目の押下キーと移動量の辞書
     _alfa = {
-        pg.K_w: (0, -1),
-        pg.K_s: (0, +1),
-        pg.K_a: (-1, 0),
-        pg.K_d: (+1, 0),
+        pg.K_w: (0, -2),
+        pg.K_s: (0, +2),
+        pg.K_a: (-2, 0),
+        pg.K_d: (+2, 0),
     }
     # 2パターン目の押下キーと移動量の辞書
     _delta = {
-        pg.K_UP: (0, -1),
-        pg.K_DOWN: (0, +1),
-        pg.K_LEFT: (-1, 0),
-        pg.K_RIGHT: (+1, 0),
+        pg.K_UP: (0, -2),
+        pg.K_DOWN: (0, +2),
+        pg.K_LEFT: (-2, 0),
+        pg.K_RIGHT: (+2, 0),
     }
     
 
@@ -92,6 +92,7 @@ class ball: # ディスクに関するクラス
         self._vx, self._vy = random.choice(ball._dires), random.choice(ball._dires)
         
     def update(self,screen: pg.Surface, pl: playerlect):
+
         yoko,tate = check_bound(screen.get_rect(), self._rct)
         if not yoko:
             self._vx *= -1
@@ -100,11 +101,11 @@ class ball: # ディスクに関するクラス
 
         if pl._rct1.colliderect(self._rct):
             self._vx *= -1
-            self._vy *= random.choice(ball._dires)
+            self._vy *= -1
         
         if pl._rct2.colliderect(self._rct):
             self._vx *= -1
-            self._vy *= random.choice(ball._dires)
+            self._vy *= -1
 
 
         self._rct.move_ip(self._vx, self._vy)

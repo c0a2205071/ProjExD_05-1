@@ -23,3 +23,6 @@
 * 操作方法
 　１PはWASDで、２Pは矢印キーで操作する
 　どちらかが先に５点取れば勝ち
+
+* 画像元
+　https://github.com/mkfeuhrer/Air-hockey
