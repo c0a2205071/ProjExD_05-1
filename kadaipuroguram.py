@@ -100,11 +100,11 @@ class ball: # ディスクに関するクラス
             self._vy *= -1
 
         if pl._rct1.colliderect(self._rct):
-            self._vx *= -1
+            self._vx *= random.choice(ball._dires)
             self._vy *= random.choice(ball._dires)
         
         if pl._rct2.colliderect(self._rct):
-            self._vx *= -1
+            self._vx *= random.choice(ball._dires)
             self._vy *= random.choice(ball._dires)
 
 
